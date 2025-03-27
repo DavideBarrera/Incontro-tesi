@@ -51,7 +51,7 @@ for row in db["bookings"].rows:
 
 
 st.markdown("---")
-st.subheader("🤝 Slot condivisi da tutti i partecipanti")
+st.subheader("🤝🏻 Data/ora condivisa da tutti i partecipanti")
 
 # Raggruppa prenotazioni per datetime
 slots = {}
