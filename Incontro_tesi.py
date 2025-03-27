@@ -27,7 +27,8 @@ st.subheader("⏱️ Date attuali")
 
 for row in db["bookings"].rows:
     cols = st.columns([4,1])
-    cols[0].write(f"{row['datetime']} — **{row['user']}**")
+    dt = datetime.fromisoformat(row["datetime"])
+    cols[0].write(dt.strftime("%d/%m/%Y %H:%M") + f" — **{row['user']}**")
 
     if row["user"] == user:
         if cols[1].button("✏️ Modifica", key=f"edit_{row['id']}"):
@@ -63,7 +64,9 @@ common = sorted((dt for dt, users in slots.items() if len(users) > 2))
 
 if common:
     for dt in common:
-        st.write(f"✅ {dt} — {len(slots[dt])} partecipanti")
+        dt_obj = datetime.fromisoformat(dt)
+        st.write("✅ " + dt_obj.strftime("%d/%m/%Y %H:%M") + f" — {len(slots[dt])} partecipanti")
+
 else:
     st.info("Nessuna data possibile.")
 
