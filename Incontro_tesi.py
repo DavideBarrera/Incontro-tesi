@@ -60,7 +60,7 @@ for row in db["bookings"].rows:
     slots.setdefault(row["datetime"], set()).add(row["user"])
 
 # Slot scelti da almeno 2 persone
-slots_min2 = sorted((dt for dt, users in slots.items() if len(users) =< 2))
+slots_min2 = sorted((dt for dt, users in slots.items() if len(users) <= 2))
 # Slot scelti da almeno 3 persone
 slots_min3 = sorted((dt for dt, users in slots.items() if len(users) > 2))
 
