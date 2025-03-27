@@ -19,7 +19,7 @@ if st.button("Prenota"):
     dt = datetime.combine(chosen, time).isoformat()
     db["bookings"].insert({"datetime": dt, "user": user})
     st.success(f"Slot registrato: {dt}")
-    st.experimental_rerun()
+    st.rerun()
 
 st.markdown("---")
 st.subheader("⏱️ Prenotazioni attuali")
@@ -32,5 +32,6 @@ for row in db["bookings"].rows:
         if cols[1].button("❌ Cancella", key=row["id"]):
             db["bookings"].delete(row["id"])
             st.success("Prenotazione cancellata")
-            st.experimental_rerun()
+            st.rerun()
+
 
