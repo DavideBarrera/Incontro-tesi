@@ -51,11 +51,18 @@ for row in db["bookings"].rows:
 
 st.markdown("---")
 st.subheader("📆 Calendario mensile")
-# Prepara lista di date prenotate
-booked = {datetime.fromisoformat(r["datetime"]).date() for r in db["bookings"].rows}
 
-today = date.today()
-year, month = today.year, today.month
+# Raccoglie tutti i mesi/anni con prenotazioni
+booked = {datetime.fromisoformat(r["datetime"]).date() for r in db["bookings"].rows}
+if booked:
+    months = sorted({(d.year, d.month) for d in booked})
+    options = [f"{y}-{m:02d}" for y, m in months]
+    selected = st.selectbox("Seleziona mese", options)
+    year, month = map(int, selected.split("-"))
+else:
+    year, month = date.today().year, date.today().month
+
+# Costruisce calendario
 cal = calendar.monthcalendar(year, month)
 df = pd.DataFrame(cal, columns=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"])
 
@@ -67,6 +74,7 @@ def mark(day):
 
 df = df.applymap(mark)
 st.table(df)
+
 
 
 
