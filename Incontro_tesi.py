@@ -9,21 +9,21 @@ db = sqlite_utils.Database("scheduler.db")
 if "bookings" not in db.table_names():
     db["bookings"].create({"datetime": str, "user": str}, pk="id")
 
-st.title("📅 Shared Date‑Time Scheduler")
+st.title("🗓️ Disponibilità incontro tesi/tirocinio")
 
-user = st.text_input("Il tuo nome", value="Anonimo")
+user = st.text_input("Digitare il proprio nome per creare o modificiare una data", value="Nome")
 
 st.markdown("---")
 chosen = st.date_input("Seleziona data")
 time = st.time_input("Seleziona orario")
-if st.button("Prenota"):
+if st.button("Conferma"):
     dt = datetime.combine(chosen, time).isoformat()
     db["bookings"].insert({"datetime": dt, "user": user})
     st.success("Slot registrato")
     st.rerun()
 
 st.markdown("---")
-st.subheader("⏱️ Prenotazioni attuali")
+st.subheader("⏱️ Date attuali")
 
 for row in db["bookings"].rows:
     cols = st.columns([4,1])
@@ -69,7 +69,7 @@ df = pd.DataFrame(cal, columns=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"])
 # Evidenzia i giorni prenotati
 def mark(day):
     if day != 0 and date(year, month, day) in booked:
-        return f"✅ {day}"
+        return f"🟢 {day}"
     return day if day != 0 else ""
 
 df = df.applymap(mark)
