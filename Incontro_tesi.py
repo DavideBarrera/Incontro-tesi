@@ -59,18 +59,25 @@ slots = {}
 for row in db["bookings"].rows:
     slots.setdefault(row["datetime"], set()).add(row["user"])
 
-# Filtra solo gli slot scelti da almeno 2 utenti
-common = sorted((dt for dt, users in slots.items() if len(users) > 2))
+# Slot scelti da almeno 2 persone
+slots_min2 = sorted((dt for dt, users in slots.items() if len(users) = 2))
+# Slot scelti da almeno 3 persone
+slots_min3 = sorted((dt for dt, users in slots.items() if len(users) > 2))
 
-if common:
-    for dt in common:
+if slots_min2:
+    for dt in slots_min2:
+        users_list = ", ".join(slots[dt])
+        dt_obj = datetime.fromisoformat(dt)
+        st.write("✅ " + dt_obj.strftime("%d/%m/%Y %H:%M") + f" — {len(slots[dt])} partecipanti: {users_list}")
+else:
+    st.info("Nessuna data con 2 partecipanti.")
+
+if slots_min3:
+    for dt in slots_min3:
         dt_obj = datetime.fromisoformat(dt)
         st.write("✅ " + dt_obj.strftime("%d/%m/%Y %H:%M") + f" — {len(slots[dt])} partecipanti")
-
-else:
-    st.info("Nessuna data possibile.")
-
-
+else: 
+    st.info("Nessuna data con 3 partecipanti.")
 
 st.markdown("---")
 st.subheader("📆 Calendario mensile")
