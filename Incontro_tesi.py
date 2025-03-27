@@ -47,5 +47,24 @@ for row in db["bookings"].rows:
             st.session_state.pop("editing")
             st.rerun()
 
+st.markdown("---")
+st.subheader("📆 Calendario mensile")
+# Prepara lista di date prenotate
+booked = {datetime.fromisoformat(r["datetime"]).date() for r in db["bookings"].rows}
+
+today = date.today()
+year, month = today.year, today.month
+cal = calendar.monthcalendar(year, month)
+df = pd.DataFrame(cal, columns=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"])
+
+# Evidenzia i giorni prenotati
+def mark(day):
+    if day != 0 and date(year, month, day) in booked:
+        return f"✅ {day}"
+    return day if day != 0 else ""
+
+df = df.applymap(mark)
+st.table(df)
+
 
 
