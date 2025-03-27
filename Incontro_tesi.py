@@ -49,6 +49,27 @@ for row in db["bookings"].rows:
             st.session_state.pop("editing")
             st.rerun()
 
+
+st.markdown("---")
+st.subheader("🤝 Slot condivisi da tutti i partecipanti")
+
+# Raggruppa prenotazioni per datetime
+slots = {}
+for row in db["bookings"].rows:
+    slots.setdefault(row["datetime"], set()).add(row["user"])
+
+all_users = {row["user"] for row in db["bookings"].rows}
+total = len(all_users)
+
+common = sorted(dt for dt, users in slots.items() if len(users) == total)
+
+if common:
+    for dt in common:
+        st.write(f"✅ {dt}")
+else:
+    st.info("Nessuno slot comune a tutti i partecipanti.")
+
+
 st.markdown("---")
 st.subheader("📆 Calendario mensile")
 
@@ -74,25 +95,3 @@ def mark(day):
 
 df = df.applymap(mark)
 st.table(df)
-
-# — Slot comuni a tutti i partecipanti —
-all_users = {row["user"] for row in db["bookings"].rows}
-total = len(all_users)
-
-slots = {}
-for row in db["bookings"].rows:
-    slots.setdefault(row["datetime"], set()).add(row["user"])
-
-st.subheader("🤝 Slot condivisi da tutti")
-common = [dt for dt, users in slots.items() if len(users) == total]
-
-if common:
-    for dt in sorted(common):
-        st.write(dt)
-else:
-    st.info("Nessuno slot è comune a tutti i partecipanti.")
-
-
-
-
-
