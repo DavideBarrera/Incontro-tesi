@@ -58,16 +58,15 @@ slots = {}
 for row in db["bookings"].rows:
     slots.setdefault(row["datetime"], set()).add(row["user"])
 
-all_users = {row["user"] for row in db["bookings"].rows}
-total = len(all_users)
-
-common = sorted(dt for dt, users in slots.items() if len(users) == total)
+# Filtra solo gli slot scelti da almeno 2 utenti
+common = sorted((dt for dt, users in slots.items() if len(users) > 2))
 
 if common:
     for dt in common:
-        st.write(f"✅ {dt}")
+        st.write(f"✅ {dt} — {len(slots[dt])} partecipanti")
 else:
-    st.info("Nessuno slot comune a tutti i partecipanti.")
+    st.info("Nessuna data possibile.")
+
 
 
 st.markdown("---")
